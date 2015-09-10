@@ -1,13 +1,18 @@
 #include <iostream>
 #include <fstream>
+#define GENERATE
+#ifdef GENERATE
 #include <vector>
 #include "WordPuzzleGenerator.h"
-
+#else
+#include "WordPuzzleSolver.h"
+#endif
 using namespace std;
 
-const string DIR = "/Users/dulimarh/CLionProjects/WordSearchGenerator/";
+const string DIR = "/Users/dulimarh/CLionProjects/WordSearch/";
 
 int main(int argc, char*argv[]) {
+#ifdef GENERATE
     ifstream word_files (DIR + "words.txt");
     vector<string> all_words;
 
@@ -23,7 +28,13 @@ int main(int argc, char*argv[]) {
 
     WordPuzzleGenerator g(width, height, all_words);
     g.solve_it();
-    g.printPuzzle();
-
+    ofstream out (DIR + "ws_out.txt");
+    g.save(out);
+    out.close();
+#else
+    ifstream puzzle (DIR + "ws_out.txt");
+    WordPuzzleSolver s(puzzle);
+    puzzle.close();
+#endif
     return 0;
 }

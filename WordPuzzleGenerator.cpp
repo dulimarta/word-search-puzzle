@@ -14,7 +14,7 @@ WordPuzzleGenerator::WordPuzzleGenerator(int width, int height, const vector<str
     grid.resize((unsigned long) height, vector<char>((unsigned long) width, EMPTY));
     multiplicity.resize((unsigned long)height, vector<int>((unsigned long) width, 0));
     for (string s : words)
-        all_words.push(s);
+        all_words.push_back(s);
 }
 
 vector<int> WordPuzzleGenerator::shared_letters_positions(const string &w) const {
@@ -161,7 +161,7 @@ void WordPuzzleGenerator::solve_it() {
     printPuzzle();
     bool placementSuccessful;
     while (all_words.size() > 0) {
-        string current_word = all_words.top();
+        string current_word = all_words.back();
         vector<int>&& positions = shared_letters_positions(current_word);
         placementSuccessful = false;
         if (positions.size() > 0
@@ -169,24 +169,24 @@ void WordPuzzleGenerator::solve_it() {
                 uni(gen) < 0.5f) { /* add a 50% chance of choosing between connected/isolated */
             /* attempt to place the word intersected with the words on the grid */
             if (place_word_connected(current_word, word_dir, positions)) {
-                all_words.pop();
-                placed_words.push(current_word);
+                all_words.pop_back();
+                placed_words.push_back(current_word);
                 placementSuccessful = true;
             }
         }
         else {
             if (place_word_isolated(current_word, word_dir)) {
-                all_words.pop();
-                placed_words.push(current_word);
+                all_words.pop_back();
+                placed_words.push_back(current_word);
                 placementSuccessful = true;
             }
         }
         if (!placementSuccessful) {
             /* do we backtrack here? */
             if (placed_words.size() > 0) {
-                all_words.push(placed_words.top());
-                remove_word_from_grid(placed_words.top());
-                placed_words.pop();
+                all_words.push_back(placed_words.back());
+                remove_word_from_grid(placed_words.back());
+                placed_words.pop_back();
             }
         }
         else {
@@ -230,10 +230,26 @@ void WordPuzzleGenerator::fill_in_noise_letters() {
     for (int r = 0; r < grid_height; r++) {
         for (int c = 0; c < grid_width; c++)
         {
+            /* TODO: these random characters may create falsely-matched
+             * words */
             if (grid[r][c] == EMPTY) {
-                grid[r][c] = 'A' + (int) (uni(gen) * 26);
+                grid[r][c] = 'a' + (int) (uni(gen) * 26);
             }
         }
     }
 
+}
+
+void WordPuzzleGenerator::save(ofstream &fout) const {
+    fout << grid_width << " " << grid_height << endl;
+    for (const auto& row : grid) {
+        for (const char& c : row) {
+            fout << c << ' ';
+        }
+        fout << endl;
+    }
+
+    fout << placed_words.size() << endl;
+    for (auto x : placed_words)
+        fout << x << endl;
 }

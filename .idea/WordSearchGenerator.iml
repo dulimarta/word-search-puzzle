@@ -5,6 +5,8 @@
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/WordPuzzleGenerator.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/WordPuzzleGenerator.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/WordPuzzleSolver.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/WordPuzzleSolver.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />

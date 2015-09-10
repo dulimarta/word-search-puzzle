@@ -7,11 +7,11 @@
 
 #include <string>
 #include <vector>
-#include <stack>
 #include <set>
 #include <map>
 #include <random>
 #include <tuple>
+#include <fstream>
 
 using namespace std;
 
@@ -20,6 +20,7 @@ public:
     WordPuzzleGenerator(int width, int height, const vector<string>& words);
     void printPuzzle() const;
     void solve_it();
+    void save (ofstream&) const;
 
 private:
     const char EMPTY = '.';
@@ -38,7 +39,7 @@ private:
     uniform_real_distribution<float> uni;
     vector<vector<char>> grid;
     vector<vector<int>> multiplicity;
-    stack<string> all_words, placed_words;
+    vector<string> all_words, placed_words;
     map<char,set<pair<int,int>>> letter_to_cells;
     map<string,tuple<int,int,Direction>> word_to_grid;
 };
