@@ -18,7 +18,7 @@ bool InfixTree::insert(const string & w) {
     for (k = N - 1; k > 0; k--) {
         sub = w.substr(k, N - k);
         cout << "Inserting suffix: " << sub << endl;
-        if (_insert (root, w, k, N - 1, false, 0) == false)
+        if (_insert (root, w, k, false, 0) == false)
             break;
     }
     if (k > 0) {
@@ -27,21 +27,19 @@ bool InfixTree::insert(const string & w) {
     }
     /* insert the entire word */
     cout << "Inserting entire word: " << w << endl;
-    return _insert (root, w, 0, N - 1, true, 0);
+    return _insert (root, w, 0, true, 0);
 }
 
-bool InfixTree::_insert(InfixNode*& top, const string &word, int L, int R, bool is_whole, int depth) {
+bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whole, int depth) {
     /* TODO the following if-statement may not be needed */
-    if (L > R) return true; /* attempt to insert an "empty" string */
-//    string sub = word.substr(L, R - L + 1);
-//    cout << "Attempt to insert " << sub << " of " << word << endl;
+    if (L >= word.length()) return true; /* attempt to insert an "empty" string */
     int child_idx = toupper(word[L]) - 'A';
     bool result;
     if (top == nullptr) {
         top = new InfixNode;
         cout << "Create a new node for " << word[L] << endl;
         top->used[child_idx] = true;
-        _insert (top->children[child_idx], word, L + 1, R, is_whole, depth + 1);
+        _insert (top->children[child_idx], word, L + 1, is_whole, depth + 1);
         result = true; /* when the tree is expanding, we have no duplicate */
     }
     else {
@@ -53,7 +51,7 @@ bool InfixTree::_insert(InfixNode*& top, const string &word, int L, int R, bool 
             else {
                 cout << "Descend to the existing node of " << word[L] << endl;
                 top->used[child_idx] = true;
-                result = _insert(top->children[child_idx], word, L + 1, R, is_whole, depth + 1);
+                result = _insert(top->children[child_idx], word, L + 1, is_whole, depth + 1);
             }
         }
         else {

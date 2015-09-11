@@ -28,8 +28,6 @@ private:
     bool _insert (InfixNode*& top, /* top of the current subtree */
                   const string& word, /* current whole word being inserted */
                   int l_pos, /* left end of the current subword */
-                  /* TODO remove r_pos? */
-                  int r_pos, /* right end of the current subword */
                     bool is_whole,
     int depth); /* recursion depth */
 public:
