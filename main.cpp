@@ -7,11 +7,24 @@
 #else
 #include "WordPuzzleSolver.h"
 #endif
+#include "InfixTree.h"
+
 using namespace std;
 
 const string DIR = "/Users/dulimarh/CLionProjects/WordSearch/";
 
-int main(int argc, char*argv[]) {
+int main() {
+    InfixTree t;
+
+    cout << t.insert ("bear") << endl;
+    cout << t.insert ("earn") << endl;
+    cout << t.insert ("beard") << endl;
+    cout << t.insert ("be") << endl;
+    cout << t.insert ("learn") << endl;
+    cout << t.insert ("clear") << endl;
+}
+
+int main0(int argc, char*argv[]) {
 #ifdef GENERATE
     ifstream word_files (DIR + "words.txt");
     vector<string> all_words;

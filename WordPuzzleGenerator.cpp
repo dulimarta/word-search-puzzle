@@ -13,8 +13,9 @@ WordPuzzleGenerator::WordPuzzleGenerator(int width, int height, const vector<str
     grid_height = height;
     grid.resize((unsigned long) height, vector<char>((unsigned long) width, EMPTY));
     multiplicity.resize((unsigned long)height, vector<int>((unsigned long) width, 0));
-    for (string s : words)
+    for (string s : words) {
         all_words.push_back(s);
+    }
 }
 
 vector<int> WordPuzzleGenerator::shared_letters_positions(const string &w) const {
