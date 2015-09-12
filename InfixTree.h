@@ -7,6 +7,7 @@
 
 #include <string>
 #include <array>
+#include <vector>
 using namespace std;
 
 class InfixTree {
@@ -30,11 +31,14 @@ private:
                  int l_pos, /* left end of the current subword */
                  bool is_whole,
                  int depth); /* recursion depth */
-    void printAll (InfixNode *) const;
+    void printAll (InfixNode *, vector<char>&) const;
 public:
     InfixTree();
     bool insert (const string&); /* non-recursive that calls _insert */
-    void printAll() const { printAll(root); }
+    void printAll() const {
+        vector<char> currentWord;
+        printAll(root, currentWord);
+    }
 };
 
 

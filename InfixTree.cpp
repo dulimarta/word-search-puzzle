@@ -34,7 +34,7 @@ bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whol
     /* TODO the following if-statement may not be needed */
     if (L >= word.length()) {
         if (top == nullptr) {
-            cout << "Creating a leaf node" << endl;
+//            cout << "Creating a leaf node" << endl;
             top = new InfixNode;
             top->isEndOfWord = is_whole;
             if (is_whole) {
@@ -55,7 +55,7 @@ bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whol
     if (top == nullptr) {
         top = new InfixNode;
         top->isLeaf = false;
-        cout << "Create a new node for " << word[L] << endl;
+//        cout << "Create a new node for " << word[L] << endl;
         top->used[child_idx] = true;
         _insert (top->children[child_idx], word, L + 1, is_whole, depth + 1);
         result = true; /* when the tree is expanding, we have no duplicate */
@@ -67,7 +67,7 @@ bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whol
                 result = false;
             }
             else {
-                cout << "Descend to the existing node of " << word[L] << endl;
+//                cout << "Descend to the existing node of " << word[L] << endl;
                 top->used[child_idx] = true;
                 result = _insert(top->children[child_idx], word, L + 1, is_whole, depth + 1);
             }
@@ -80,20 +80,25 @@ bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whol
     return result;
 }
 
-void InfixTree::printAll(InfixNode *top) const {
+void InfixTree::printAll(InfixNode *top, vector<char>& word) const {
     if (top == nullptr) {
-        cout << "# ";
+//        for (char c : word)
+//            cout << c;
+//        cout << " #" << endl;
         return;
     }
     if (top->isEndOfWord) { /* no more children when you hit an END node */
-        cout << "* ";
+        for (char c : word)
+            cout << c;
+        cout << " *" << endl;
         return;
     }
     for (int k = 0; k < top->children.size(); k++)
     {
         if (top->children[k]) {
-            cout << (char) ('A' + k);
-            printAll (top->children[k]);
+            word.push_back ((char) ('A' + k));
+            printAll (top->children[k], word);
+            word.pop_back();
         }
     }
 }
