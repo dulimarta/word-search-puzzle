@@ -16,12 +16,10 @@ const string DIR = "/Users/dulimarh/CLionProjects/WordSearch/";
 int main() {
     InfixTree t;
 
-    cout << t.insert ("bear") << endl;
-    cout << t.insert ("earn") << endl;
-    cout << t.insert ("beard") << endl;
-    cout << t.insert ("be") << endl;
-    cout << t.insert ("learn") << endl;
-    cout << t.insert ("clear") << endl;
+    for (auto x : {"bear", "beer", "dreadful", "clean", "cloning", "clarity",
+        "bread", "breed"})
+        cout << t.insert (x) << endl;
+    t.printAll();
 }
 
 int main0(int argc, char*argv[]) {
