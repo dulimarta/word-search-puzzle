@@ -19,7 +19,7 @@ bool InfixTree::insert(const string & w) {
     bool allInserted = true;
     for (k = N - 1; k >= 0; k--) {
         sub = w.substr(k, N - k);
-        cout << "Inserting suffix: " << sub << endl;
+//        cout << "Inserting suffix: " << sub << endl;
         if (_insert (root, w, k, k == 0, 0) == false) {
             allInserted = false;
             break;
@@ -29,8 +29,8 @@ bool InfixTree::insert(const string & w) {
         /* fail to insert, we must rollback all previous suffixes */
         for (int i = k; i < N; i++) {
             sub = w.substr(i, N - i);
-            cout << "Must rollback " << sub << endl;
             _undo (root, sub, 0);
+            cout << "Dump AFTER rollback " << sub << endl;
             dump();
         }
         return false;
@@ -43,7 +43,7 @@ bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whol
     /* TODO the following if-statement may not be needed */
     if (L >= word.length()) {
         if (top == nullptr) {
-            cout << "Creating a leaf node" << endl;
+//            cout << "Creating a leaf node" << endl;
             top = new InfixNode;
             top->isEndOfWord = is_whole;
             if (is_whole) {
@@ -64,7 +64,7 @@ bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whol
     if (top == nullptr) {
         top = new InfixNode;
         top->isLeaf = false;
-        cout << "Create a new node for " << word[L] << endl;
+//        cout << "Create a new node for " << word[L] << endl;
         top->sharedCount[child_idx] = 1;
         _insert (top->children[child_idx], word, L + 1, is_whole, depth + 1);
         result = true; /* when the tree is expanding, we have no duplicate */
@@ -78,8 +78,8 @@ bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whol
             else {
                 top->sharedCount[child_idx]++;
                 top->isLeaf = false;
-                cout << "Descend to " << word[L] << " share count is " <<
-                        top->sharedCount[child_idx] << endl;
+//                cout << "Descend to " << word[L] << " share count is " <<
+//                        top->sharedCount[child_idx] << endl;
                 result = _insert(top->children[child_idx], word, L + 1, is_whole, depth + 1);
             }
         }
@@ -104,9 +104,20 @@ void InfixTree::_undo(InfixNode *&top, const string & word, int depth) const {
             << letter_count << " words" << endl;
             letter_count--;
             if (letter_count == 0) {
-                cout << "Must prune a node" << endl;
-                delete top;
-                top = nullptr;
+                cout << "Must prune the node of " << (char) ('A' + idx) << endl;
+                delete top->children[idx];
+                top->children[idx] = nullptr;
+                bool allNull = true;
+                for (auto s : top->children)
+                    if (s != nullptr) {
+                        allNull = false;
+                        break;
+                    }
+                if (allNull) {
+                    cout << "Leaf adjustment required" << endl;
+                    top->isLeaf = true;
+                }
+
             }
         }
     }

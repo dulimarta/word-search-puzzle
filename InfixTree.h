@@ -17,7 +17,6 @@ private:
         InfixNode () {
             isEndOfWord = false;
             isLeaf = false;
-
         }
         array<InfixNode*,26> children;
         array<int,26> sharedCount;
