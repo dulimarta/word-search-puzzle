@@ -14,11 +14,13 @@ class InfixTree {
 private:
     class InfixNode {
     public:
-        InfixNode () : children{nullptr}, used{false} {
+        InfixNode () {
             isEndOfWord = false;
+            isLeaf = false;
+
         }
         array<InfixNode*,26> children;
-        array<bool,26> used;
+        array<int,26> sharedCount;
         bool isEndOfWord, isLeaf;
 
     };
@@ -30,14 +32,20 @@ private:
                  const string &word, /* current whole word being inserted */
                  int l_pos, /* left end of the current subword */
                  bool is_whole,
-                 int depth); /* recursion depth */
+                 int depth) const; /* recursion depth */
+    void _undo (InfixNode*& top, const string&, int) const;
     void printAll (InfixNode *, vector<char>&) const;
+    void _dump (InfixNode*, vector<string>&) const;
 public:
     InfixTree();
     bool insert (const string&); /* non-recursive that calls _insert */
     void printAll() const {
         vector<char> currentWord;
         printAll(root, currentWord);
+    }
+    void dump() const {
+        vector<string> tmp;
+        _dump(root, tmp);
     }
 };
 
