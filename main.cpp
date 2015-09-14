@@ -16,10 +16,9 @@ const string DIR = "/Users/dulimarh/CLionProjects/WordSearch/";
 int main() {
     InfixTree t;
 
-    for (auto x : {"clean", "cleanse",  "distribution", "clever", /*"downtown",*/
+    for (auto x : {"clean", "distribution", "cleanse", "cleaner", "clever", "downtown",
         "bread", "breed", "clearly", "tribute"}) {
-        cout << t.insert(x) << endl;
-        t.dump();
+        t.insert(x);
     }
     t.printAll();
 }

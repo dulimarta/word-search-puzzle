@@ -3,9 +3,18 @@
 //
 
 #include <iostream>
-#include <sstream>
+//#include <sstream>
 #include <assert.h>
 #include "InfixTree.h"
+
+InfixTree::InfixNode::InfixNode() {
+    isEndOfWord = false;
+    isLeaf = false;
+
+    /* require explicit initialization */
+    fill(children.begin(), children.end(), nullptr);
+    fill(sharedCount.begin(), sharedCount.end(), 0);
+}
 
 InfixTree::InfixTree() {
     root = nullptr;
@@ -20,7 +29,7 @@ bool InfixTree::insert(const string & w) {
     bool allInserted = true;
     for (k = N - 1; k >= 0; k--) {
         sub = w.substr(k, N - k);
-        cout << "Inserting suffix: " << sub << endl;
+//        cout << "Inserting suffix: " << sub << endl;
         if (_insert (root, w, k, k == 0) == false) {
             allInserted = false;
             break;
@@ -30,7 +39,7 @@ bool InfixTree::insert(const string & w) {
         /* fail to insert, we must rollback all previous suffixes */
         for (int i = k; i < N; i++) {
             sub = w.substr(i, N - i);
-            cout << "Rolling back " << sub << endl;
+//            cout << "Rolling back " << sub << endl;
             _undo (root, sub, 0);
 //            cout << "Dump AFTER rollback " << sub << endl;
 //            dump();

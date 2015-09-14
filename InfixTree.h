@@ -14,10 +14,7 @@ class InfixTree {
 private:
     class InfixNode {
     public:
-        InfixNode () {
-            isEndOfWord = false;
-            isLeaf = false;
-        }
+        InfixNode ();
         array<InfixNode*,26> children;
         array<int,26> sharedCount;
         bool isEndOfWord, isLeaf;
