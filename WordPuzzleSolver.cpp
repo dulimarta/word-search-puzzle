@@ -24,10 +24,9 @@ WordPuzzleSolver::WordPuzzleSolver(ifstream &fin) {
         fin >> s;
         words_by_length[s.length()].insert(s);
     }
-    locateWords();
 }
 
-void WordPuzzleSolver::locateWords() {
+void WordPuzzleSolver::solve() {
     for (auto& x : words_by_length) {
         const int N = x.first;
         auto& word_set = x.second;
@@ -39,7 +38,7 @@ void WordPuzzleSolver::locateWords() {
                     word += grid[k][m+c];
                 }
                 if (word_set.find(word) != word_set.end()) {
-                    cout << word << " at (" << k << "," << m << ") ACROSS" << endl;
+                    cout << word << " " << k << " " << m << " ACROSS" << endl;
                     word_set.erase(word);
                 }
             }
@@ -51,7 +50,7 @@ void WordPuzzleSolver::locateWords() {
                     word += grid[k+c][m];
                 }
                 if (word_set.find(word) != word_set.end()) {
-                    cout << word << " at (" << k << "," << m << ") DOWN" << endl;
+                    cout << word << " " << k << " " << m << " DOWN" << endl;
                     word_set.erase(word);
                 }
             }

@@ -1,14 +1,10 @@
 #include <iostream>
 #include <fstream>
-#define GENERATE
-#ifdef GENERATE
 #include <vector>
 #include <regex>
 #include <random>
 #include "WordPuzzleGenerator.h"
-#else
 #include "WordPuzzleSolver.h"
-#endif
 #include "InfixTree.h"
 
 using namespace std;
@@ -61,11 +57,6 @@ void doGenerate(int numWord, int grid_width, int grid_height,
     g.save(pzl_out, key_out);
 }
 
-void doSolve()
-{
-
-}
-
 int main(int argc, char * argv[]) {
 
     if (argc < 2) {
@@ -82,33 +73,20 @@ int main(int argc, char * argv[]) {
             k_out.close();
         }
         else {
-            cerr << "Insufficient argument" << endl;
+            cerr << "Generator: Insufficient argument" << endl;
         }
     }
-    else
-        doSolve();
-    return 0;
-}
-
-int main0(int argc, char*argv[]) {
-#ifdef GENERATE
-    ifstream word_files (DIR + "words.txt");
-    vector<string> all_words;
-
-    cout << "Is the file open? " << word_files.is_open() << endl;
-    int width, height;
-    word_files >> height >> width;
-
-    string w;
-    while (word_files >> w) {
-        all_words.push_back(w);
-        cout << w << endl;
+    else {
+        if (argc >= 3) {
+            ifstream puzz_in(argv[2]);
+//            doSolve(puzz_in);
+            WordPuzzleSolver s(puzz_in);
+            s.solve();
+            puzz_in.close();
+        }
+        else {
+            cerr << "Solver: Insufficient argument" << endl;
+        }
     }
-
-#else
-    ifstream puzzle (DIR + "ws_out.txt");
-    WordPuzzleSolver s(puzzle);
-    puzzle.close();
-#endif
     return 0;
 }

@@ -16,8 +16,8 @@ using namespace std;
 class WordPuzzleSolver {
 public:
     WordPuzzleSolver(ifstream&);
+    void solve();
 private:
-    void locateWords();
     vector<vector<char>> grid;
     map<int,set<string>> words_by_length;
 };
