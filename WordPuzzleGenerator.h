@@ -20,13 +20,12 @@ class WordPuzzleGenerator {
 public:
     WordPuzzleGenerator(int width, int height, const vector<string>& words);
     void printPuzzle() const;
-    void solve_it();
-    void save (ofstream&) const;
+    bool generate();
+    void save (ofstream&, ofstream&) const;
 
 private:
     const char EMPTY = '.';
     enum Direction{HORIZONTAL, VERTICAL};
-
     vector<int> shared_letters_positions(const string &w) const;
     bool place_word_isolated (const string& w, Direction d);
     bool place_word_connected (const string& w, Direction d, vector<int>&);

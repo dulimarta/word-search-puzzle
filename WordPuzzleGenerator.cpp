@@ -8,7 +8,8 @@
 
 using namespace std;
 
-WordPuzzleGenerator::WordPuzzleGenerator(int width, int height, const vector<string>& words) {
+WordPuzzleGenerator::WordPuzzleGenerator(int width, int height, const vector<string>& words)
+{
     grid_width = width;
     grid_height = height;
     grid.resize((unsigned long) height, vector<char>((unsigned long) width, EMPTY));
@@ -156,12 +157,13 @@ bool WordPuzzleGenerator::place_word_connected(const string &w, Direction d, vec
     return false;
 }
 
-void WordPuzzleGenerator::solve_it() {
+bool WordPuzzleGenerator::generate() {
     Direction word_dir = HORIZONTAL;
 
-    printPuzzle();
     bool placementSuccessful;
-    while (all_words.size() > 0) {
+    int depleted_count = 0;
+    int max_attempt = 1 + all_words.size() / 4;
+    while (all_words.size() > 0 && depleted_count < max_attempt) {
         string current_word = all_words.back();
         vector<int>&& positions = shared_letters_positions(current_word);
         placementSuccessful = false;
@@ -188,19 +190,22 @@ void WordPuzzleGenerator::solve_it() {
                 all_words.push_back(placed_words.back());
                 remove_word_from_grid(placed_words.back());
                 placed_words.pop_back();
+                if (placed_words.size() == 0)
+                    depleted_count++;
             }
         }
         else {
             word_dir = Direction(1 - word_dir);
         }
-        printPuzzle();
+//        printPuzzle();
     }
-    fill_in_noise_letters();
-    for (auto& x : word_to_grid) {
-        auto& tup = x.second;
-        cout << setw(15) << left << x.first << " at " << right << setw(2) << get<0>(tup) << ","
-            << setw(2) << get<1>(tup) << "  "
-                << (get<2>(tup) == 0 ? "HORIZONTAL" : "VERTICAL") << endl;
+    if (all_words.empty()) {
+        fill_in_noise_letters();
+        return true;
+    }
+    else {
+        cerr << "Fail to generate the puzzle after " << max_attempt << " attempts" << endl;
+        return false;
     }
 }
 
@@ -234,23 +239,34 @@ void WordPuzzleGenerator::fill_in_noise_letters() {
             /* TODO: these random characters may create falsely-matched
              * words */
             if (grid[r][c] == EMPTY) {
-                grid[r][c] = 'a' + (int) (uni(gen) * 26);
+                grid[r][c] = 'A' + (int) (uni(gen) * 26);
             }
         }
     }
 
 }
 
-void WordPuzzleGenerator::save(ofstream &fout) const {
-    fout << grid_width << " " << grid_height << endl;
+void WordPuzzleGenerator::save(ofstream &puz_out, ofstream& key_out) const {
+    puz_out << grid_width << " " << grid_height << endl;
     for (const auto& row : grid) {
         for (const char& c : row) {
-            fout << c << ' ';
+            puz_out << c << ' ';
         }
-        fout << endl;
+        puz_out << endl;
     }
 
-    fout << placed_words.size() << endl;
+    puz_out << placed_words.size() << endl;
     for (auto x : placed_words)
-        fout << x << endl;
+        puz_out << x << endl;
+    copy (placed_words.rbegin(), placed_words.rend(), ostream_iterator<string>(puz_out, "\n"));
+
+    for (auto iter = placed_words.crbegin(); iter != placed_words.crend(); ++iter) {
+        auto& tup = word_to_grid.at(*iter);
+        key_out << setw(15) << left << *iter << " at " << right << setw(2) << get<0>(tup) << ","
+        << setw(2) << get<1>(tup) << "  "
+        << (get<2>(tup) == 0 ? "ACROSS" : "DOWN") << endl;
+
+    }
+//    for (auto &x : word_to_grid) {
+//    }
 }
