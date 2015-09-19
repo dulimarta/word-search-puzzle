@@ -10,6 +10,7 @@ using namespace std;
 
 WordPuzzleGenerator::WordPuzzleGenerator(int width, int height, const vector<string>& words)
 {
+    gen.seed(time(0)); /* initialize with a seed */
     grid_width = width;
     grid_height = height;
     grid.resize((unsigned long) height, vector<char>((unsigned long) width, EMPTY));
@@ -197,7 +198,6 @@ bool WordPuzzleGenerator::generate() {
         else {
             word_dir = Direction(1 - word_dir);
         }
-//        printPuzzle();
     }
     if (all_words.empty()) {
         fill_in_noise_letters();
@@ -239,7 +239,7 @@ void WordPuzzleGenerator::fill_in_noise_letters() {
             /* TODO: these random characters may create falsely-matched
              * words */
             if (grid[r][c] == EMPTY) {
-                grid[r][c] = 'A' + (int) (uni(gen) * 26);
+                grid[r][c] = (char) ('!' + (int) (uni(gen) * 90));
             }
         }
     }
@@ -256,17 +256,13 @@ void WordPuzzleGenerator::save(ofstream &puz_out, ofstream& key_out) const {
     }
 
     puz_out << placed_words.size() << endl;
-    for (auto x : placed_words)
-        puz_out << x << endl;
     copy (placed_words.rbegin(), placed_words.rend(), ostream_iterator<string>(puz_out, "\n"));
 
     for (auto iter = placed_words.crbegin(); iter != placed_words.crend(); ++iter) {
         auto& tup = word_to_grid.at(*iter);
-        key_out << setw(15) << left << *iter << " at " << right << setw(2) << get<0>(tup) << ","
-        << setw(2) << get<1>(tup) << "  "
+        key_out << *iter << " " << right << get<0>(tup) << " "
+        << get<1>(tup) << " "
         << (get<2>(tup) == 0 ? "ACROSS" : "DOWN") << endl;
 
     }
-//    for (auto &x : word_to_grid) {
-//    }
 }

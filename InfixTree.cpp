@@ -3,7 +3,6 @@
 //
 
 #include <iostream>
-//#include <sstream>
 #include <assert.h>
 #include "InfixTree.h"
 
@@ -21,7 +20,7 @@ InfixTree::InfixTree() {
 }
 
 bool InfixTree::insert(const string & w) {
-    cout << "*** INSERTING " << w << endl;
+//    cout << "*** INSERTING " << w << endl;
     const int N = w.length();
     /* insert all the prefixes, starting from the shortest one */
     int k;
@@ -39,9 +38,9 @@ bool InfixTree::insert(const string & w) {
         /* fail to insert, we must rollback all previous suffixes */
         for (int i = k; i < N; i++) {
             sub = w.substr(i, N - i);
-//            cout << "Rolling back " << sub << endl;
+//            clog << "Rolling back " << sub << endl;
             _undo (root, sub, 0);
-//            cout << "Dump AFTER rollback " << sub << endl;
+//            clog << "Dump AFTER rollback " << sub << endl;
 //            dump();
         }
         return false;
@@ -51,7 +50,6 @@ bool InfixTree::insert(const string & w) {
 }
 
 bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whole) const {
-    /* TODO the following if-statement may not be needed */
     bool result;
     if (top == nullptr) {
         top = new InfixNode;
@@ -87,11 +85,11 @@ bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whol
             else {
                 /* TODO: do we need something else here? */
 //                cout << "WHAT SHOULD WE DO HERE????" << endl;
-                result = true;
+                result = !is_whole;
             }
         }
         else {
-            cout << "FAILED: Duplicate entry" << endl;
+            cerr << "FAILED: Duplicate entry" << endl;
             result = false;
         }
     }
@@ -105,7 +103,7 @@ void InfixTree::_undo(InfixNode *&top, const string& word, int depth) const {
     int idx = (int) (toupper(word[depth]) - 'A');
     _undo(top->children[idx], word, depth + 1);
     if (--top->sharedCount[idx] == 0) {
-//        cout << "Must prune the node of " << (char) ('A' + idx) << endl;
+//        clog << "Must prune the node of " << (char) ('A' + idx) << endl;
         assert (top->children[idx]);
         delete top->children[idx];
         top->children[idx] = nullptr;
@@ -116,12 +114,12 @@ void InfixTree::_undo(InfixNode *&top, const string& word, int depth) const {
                 break;
             }
         if (allNull) {
-//            cout << "Leaf adjustment required" << endl;
+//            clog << "Leaf adjustment required" << endl;
             top->isLeaf = true;
         }
     }
 //    else {
-//        cout << "Decrement share count of letter " << word[depth] << " to "
+//        clog << "Decrement share count of letter " << word[depth] << " to "
 //        << top->sharedCount[idx] << endl;
 //    }
 }
@@ -131,8 +129,8 @@ void InfixTree::_dump(const InfixNode *top, vector<string>& path) const {
     if (top != nullptr) {
         if (top->isLeaf) {
             for (auto s : path)
-                cout << s;
-            cout << endl;
+                clog << s;
+            clog << endl;
             return;
         }
         for (int k = 0; k < top->children.size(); k++)
@@ -154,8 +152,8 @@ void InfixTree::printAll(const InfixNode *top, vector<char>& word) const {
         return;
     if (top->isEndOfWord) { /* no more children when you hit an END node */
         for (char c : word)
-            cout << c;
-        cout << endl;
+            clog << c;
+        clog << endl;
         return;
     }
     if (top->isLeaf)

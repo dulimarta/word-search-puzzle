@@ -20,6 +20,7 @@ public:
 private:
     vector<vector<char>> grid;
     map<int,set<string>> words_by_length;
+    vector<string> all_words;
 };
 
 
