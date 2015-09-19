@@ -32,9 +32,9 @@ void WordPuzzleSolver::solve() {
     for (auto& x : words_by_length) {
         const int N = x.first;
         auto& word_set = x.second;
-        clog << word_set.size() << " words of length " << N << endl;
+//        clog << word_set.size() << " words of length " << N << endl;
         for (int k = 0; k < grid.size(); k++) {
-            for (int m = 0; m < grid[k].size() - N; m++) {
+            for (int m = 0; m < grid[k].size() - N + 1; m++) {
                 string word;
                 for (int c = 0; c < N; c++) {
                     word += grid[k][m+c];
@@ -46,7 +46,7 @@ void WordPuzzleSolver::solve() {
                 }
             }
         }
-        for (int k = 0; k < grid.size() - N; k++) {
+        for (int k = 0; k < grid.size() - N + 1; k++) {
             for (int m = 0; m < grid[k].size(); m++) {
                 string word;
                 for (int c = 0; c < N; c++) {
