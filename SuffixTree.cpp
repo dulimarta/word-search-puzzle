@@ -4,9 +4,9 @@
 
 #include <iostream>
 #include <assert.h>
-#include "InfixTree.h"
+#include "SuffixTree.h"
 
-InfixTree::InfixNode::InfixNode() {
+SuffixTree::InfixNode::InfixNode() {
     isEndOfWord = false;
     isLeaf = false;
 
@@ -15,11 +15,11 @@ InfixTree::InfixNode::InfixNode() {
     fill(sharedCount.begin(), sharedCount.end(), 0);
 }
 
-InfixTree::InfixTree() {
+SuffixTree::SuffixTree() {
     root = nullptr;
 }
 
-bool InfixTree::insert(const string & w) {
+bool SuffixTree::insert(const string & w) {
 //    cout << "*** INSERTING " << w << endl;
     const int N = w.length();
     /* insert all the prefixes, starting from the shortest one */
@@ -49,7 +49,7 @@ bool InfixTree::insert(const string & w) {
     return allInserted;
 }
 
-bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whole, string word_in_tree) const {
+bool SuffixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whole, string word_in_tree) const {
     bool result;
     if (top == nullptr) {
         top = new InfixNode;
@@ -98,7 +98,7 @@ bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whol
     return result;
 }
 
-void InfixTree::_undo(InfixNode *&top, const string& word, int depth) const {
+void SuffixTree::_undo(InfixNode *&top, const string& word, int depth) const {
     if (top == nullptr) return;
     if (depth >= word.length()) return;
     if (top->isEndOfWord) return;
@@ -126,7 +126,7 @@ void InfixTree::_undo(InfixNode *&top, const string& word, int depth) const {
 //    }
 }
 
-void InfixTree::_dump(const InfixNode *top, vector<string>& path) const {
+void SuffixTree::_dump(const InfixNode *top, vector<string>& path) const {
 #if 0
     if (top != nullptr) {
         if (top->isLeaf) {
@@ -149,7 +149,7 @@ void InfixTree::_dump(const InfixNode *top, vector<string>& path) const {
 #endif
 }
 
-void InfixTree::printAll(const InfixNode *top, vector<char>& word) const {
+void SuffixTree::printAll(const InfixNode *top, vector<char>& word) const {
     if (top == nullptr)
         return;
     if (top->isEndOfWord) { /* no more children when you hit an END node */

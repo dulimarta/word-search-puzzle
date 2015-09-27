@@ -10,7 +10,7 @@
 #include <vector>
 using namespace std;
 
-class InfixTree {
+class SuffixTree {
 private:
     class InfixNode {
     public:
@@ -32,7 +32,7 @@ private:
     void printAll (const InfixNode *, vector<char>&) const;
     void _dump (const InfixNode*, vector<string>&) const;
 public:
-    InfixTree();
+    SuffixTree();
     bool insert (const string&); /* non-recursive that calls _insert */
     void printAll() const {
         vector<char> currentWord;

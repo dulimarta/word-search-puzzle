@@ -5,11 +5,16 @@
 #include <random>
 #include "WordPuzzleGenerator.h"
 #include "WordPuzzleSolver.h"
-#include "InfixTree.h"
+#include "SuffixTree.h"
 
 using namespace std;
 
 const string DIR = "/Users/dulimarh/CLionProjects/WordSearch/";
+
+/* In Linux/OSX, the following file is the user dictionary
+ * one word per line. This program selects random words from
+ * the file. In you attempt to run this on Windows, you
+ * have to first create the dictionary yourself. */
 const string DICTIONARY = "/usr/share/dict/words";
 
 void doGenerate(int numWord, int grid_width, int grid_height,
@@ -21,7 +26,7 @@ void doGenerate(int numWord, int grid_width, int grid_height,
     ofstream pzl_out(pzl_name);
     ofstream key_out(key_name);
 
-    InfixTree t;
+    SuffixTree t;
     regex alpha_only("[a-z]{6,10}"); /* words with 6-10 characters */
     auto touppercase = [](const string& s) {
         string t;
@@ -38,9 +43,6 @@ void doGenerate(int numWord, int grid_width, int grid_height,
                       vw[w.length()].push_back(touppercase(w));
               });
 
-//    for (auto& v : vw) {
-//        cout << v.size() << endl;
-//    }
     int count = 0;
     /* Insert selected random words into the Infix tree */
     vector<string> all_words;
@@ -55,7 +57,6 @@ void doGenerate(int numWord, int grid_width, int grid_height,
             count++;
         }
     }
-    //t.printAll();
 
     WordPuzzleGenerator g(grid_width, grid_height, all_words);
     if (g.generate()) {
