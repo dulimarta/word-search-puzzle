@@ -15,6 +15,7 @@ WordPuzzleSolver::WordPuzzleSolver(ifstream &fin) {
         for (int m = 0; m < width; m++)
         {
             fin >> ws >> grid[k][m]; /* skip whitespace */
+            first_letter_pos[grid[k][m]].push_back(make_pair(k,m));
         }
     int num_words;
     fin >> num_words;
@@ -31,9 +32,10 @@ WordPuzzleSolver::WordPuzzleSolver(ifstream &fin) {
 }
 
 void WordPuzzleSolver::solve() {
-    solve_with_triple();
+//    solve_with_slow_triple();
+//    solve_with_fast_triple();
 //    solve_with_quad();
-//    solve_own();
+    solve_own();
 }
 
 /** TRIPLE */
@@ -55,7 +57,7 @@ bool WordPuzzleSolver::check_triple_down (int start_r, int start_c, const string
     return true;
 }
 
-void WordPuzzleSolver::solve_with_triple() const {
+void WordPuzzleSolver::solve_with_slow_triple() const {
     for (auto& word : all_words) {
         const int N = word.length();
 
@@ -73,12 +75,31 @@ void WordPuzzleSolver::solve_with_triple() const {
     }
 }
 
+void WordPuzzleSolver::solve_with_fast_triple() const {
+    for (auto& word : all_words) {
+
+        /* get all positions of the word's first letter */
+        auto& positions = first_letter_pos.at(word[0]);
+        for (auto coord : positions) {
+            if (check_triple_across(coord.first, coord.second, word))
+                cout << word << " "
+                    << coord.first << " " << coord.second
+                    << " ACROSS" << endl;
+            else if (check_triple_down(coord.first, coord.second, word))
+                cout << word << " "
+                    << coord.first << " " << coord.second
+                    << " DOWN" << endl;
+        }
+    }
+}
+
 //#undef SLOWER_SEARCH_FROM_ARRAY
-bool WordPuzzleSolver::check_quad_across (int start_row, int start_col, int shortest, int longest,
+void WordPuzzleSolver::check_quad_across (int start_row, int start_col, int
+shortest, int longest,
 vector<tuple<int,int,string>>& sol) const
 {
     for (int len = shortest; len <= longest; len++) {
-        if (start_col + len > grid[0].size()) return false;
+        if (start_col + len > grid[0].size()) return;
         string word (len, ' ');
         for (int k = 0; k < len; k++) {
             word[k] = grid[start_row][start_col + k];
@@ -90,7 +111,7 @@ vector<tuple<int,int,string>>& sol) const
         if (where != all_words.end()) {
             int pos = where - all_words.begin();
             sol[pos]  = make_tuple(start_row, start_col, "ACROSS");
-            return true;
+            return;
         }
 #else
 
@@ -102,19 +123,19 @@ vector<tuple<int,int,string>>& sol) const
             sol[word_to_position.at(word)] = make_tuple(start_row,
                                                        start_col,
                                             "ACROSS");
-            return true;
+            return;
         }
 #endif
     }
-    return false;
+    return;
 }
 
-bool WordPuzzleSolver::check_quad_down (int start_row, int start_col,
+void WordPuzzleSolver::check_quad_down (int start_row, int start_col,
                                         int shortest, int longest,
 vector<tuple<int,int,string>>& sol) const
 {
     for (int len = shortest; len <= longest; len++) {
-        if (start_row + len > grid.size()) return false;
+        if (start_row + len > grid.size()) return;
         string word (len, ' ');
         for (int k = 0; k < len; k++) {
             word[k] = grid[start_row + k][start_col];
@@ -133,7 +154,7 @@ vector<tuple<int,int,string>>& sol) const
 //        for (int i = 0; i < all_words.size(); ++i) {
 //            if (word == all_words[i]) {
 //                sol[i]  = make_tuple(start_row, start_col, "DOWN");
-//                return true;
+//                return;
 //            }
 //        }
 
@@ -146,11 +167,11 @@ vector<tuple<int,int,string>>& sol) const
             sol[word_to_position.at(word)] = make_tuple(start_row,
                                                        start_col,
                                             "DOWN");
-            return true;
+            return;
         }
 #endif
     }
-    return false;
+    return;
 }
 
 void WordPuzzleSolver::solve_with_quad() const {
@@ -164,10 +185,9 @@ void WordPuzzleSolver::solve_with_quad() const {
     vector<tuple<int,int,string>> solution (all_words.size());
     for (int k = 0; k < grid.size(); k++) {
         for (int m = 0; m < grid[0].size(); m++) {
-            /* begin with the shortest word across */
-            if (!check_quad_across (k, m, minLen, maxLen, solution))
-                check_quad_down (k, m, minLen, maxLen, solution);
-
+            /* we have to check BOTH direction */
+            check_quad_across (k, m, minLen, maxLen, solution);
+            check_quad_down (k, m, minLen, maxLen, solution);
         }
     }
     for (int k = 0; k < all_words.size(); k++) {

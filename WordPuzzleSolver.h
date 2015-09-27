@@ -31,15 +31,20 @@ private:
      * its original position in the list */
     map<string,int> word_to_position;
 
+    /* associate each letter with (r,c) positions on the grid,
+     * (this data structure is used by fast_triple) */
+    map<char,vector<pair<int,int>>> first_letter_pos;
+
     void solve_own();
-    void solve_with_triple() const;
+    void solve_with_slow_triple() const;
+    void solve_with_fast_triple() const;
     void solve_with_quad() const;
     bool check_triple_across(int,int,const string&) const;
     bool check_triple_down(int,int,const string&) const;
 
-    bool check_quad_across (int, int, int, int,
+    void check_quad_across (int, int, int, int,
                             vector<tuple<int,int,string>>&) const;
-    bool check_quad_down (int, int, int, int,
+    void check_quad_down (int, int, int, int,
                           vector<tuple<int,int,string>>&) const;
 };
 
