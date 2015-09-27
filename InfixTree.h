@@ -27,7 +27,7 @@ private:
     bool _insert(InfixNode *&top, /* top of the current subtree */
                  const string &word, /* current whole word being inserted */
                  int l_pos, /* left end of the current subword */
-                 bool is_whole) const; /* recursion depth */
+                 bool is_whole, string) const; /* recursion depth */
     void _undo (InfixNode*& top, const string&, int) const;
     void printAll (const InfixNode *, vector<char>&) const;
     void _dump (const InfixNode*, vector<string>&) const;

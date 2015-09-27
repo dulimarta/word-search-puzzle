@@ -15,7 +15,7 @@ const string DICTIONARY = "/usr/share/dict/words";
 void doGenerate(int numWord, int grid_width, int grid_height,
                 const string& pzl_name, const string& key_name)
 {
-    std::default_random_engine rnd_engine (time(0));
+    std::default_random_engine rnd_engine/* (time(0))*/;
     std::uniform_int_distribution<int> uniformInt (6, 10);
     std::uniform_real_distribution<float> uniformFloat;
     ofstream pzl_out(pzl_name);
@@ -33,9 +33,9 @@ void doGenerate(int numWord, int grid_width, int grid_height,
     ifstream words(DICTIONARY);
     for_each (istream_iterator<string>(words), istream_iterator<string>(),
             /* the two local variables must be passed to the functor */
-              [&alpha_only, &vw](const string& w) {
+              [&alpha_only, &vw, touppercase](const string& w) {
                   if (regex_match (w, alpha_only))
-                      vw[w.length()].push_back(w);
+                      vw[w.length()].push_back(touppercase(w));
               });
 
 //    for (auto& v : vw) {
@@ -44,11 +44,14 @@ void doGenerate(int numWord, int grid_width, int grid_height,
     int count = 0;
     /* Insert selected random words into the Infix tree */
     vector<string> all_words;
+    set<string> picked;
     while (count < numWord) {
         int len = uniformInt(rnd_engine);
-        int idx = uniformFloat(rnd_engine) * vw[len].size();
+        int idx = uniformFloat(rnd_engine) * vw.at(len).size();
+        auto result = picked.insert(vw.at(len)[idx]);
+        if (!result.second) continue;
         if (t.insert(vw[len][idx])) {
-            all_words.push_back(touppercase(vw[len][idx]));
+            all_words.push_back(vw[len][idx]);
             count++;
         }
     }

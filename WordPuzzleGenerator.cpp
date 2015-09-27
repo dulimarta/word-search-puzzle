@@ -10,7 +10,7 @@ using namespace std;
 
 WordPuzzleGenerator::WordPuzzleGenerator(int width, int height, const vector<string>& words)
 {
-    gen.seed(time(0)); /* initialize with a seed */
+    //gen.seed(time(0)); /* initialize with a seed */
     grid_width = width;
     grid_height = height;
     grid.resize((unsigned long) height, vector<char>((unsigned long) width, EMPTY));
@@ -239,7 +239,7 @@ void WordPuzzleGenerator::fill_in_noise_letters() {
             /* TODO: these random characters may create falsely-matched
              * words */
             if (grid[r][c] == EMPTY) {
-                grid[r][c] = (char) ('!' + (int) (uni(gen) * 90));
+                grid[r][c] = (char) ('a' + (int) (uni(gen) * 26));
             }
         }
     }
@@ -247,7 +247,7 @@ void WordPuzzleGenerator::fill_in_noise_letters() {
 }
 
 void WordPuzzleGenerator::save(ofstream &puz_out, ofstream& key_out) const {
-    puz_out << grid_width << " " << grid_height << endl;
+    puz_out << grid_height << " " << grid_width << endl;
     for (const auto& row : grid) {
         for (const char& c : row) {
             puz_out << c << ' ';

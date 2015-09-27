@@ -19,8 +19,28 @@ public:
     void solve();
 private:
     vector<vector<char>> grid;
-    map<int,set<string>> words_by_length;
     vector<string> all_words;
+
+    /* extra data structures to speed up search */
+    /* the map will group the words by its length, i.e. each set in the
+     * map hold words of the same length.
+     */
+    map<int,set<string>> words_by_length;
+
+    /* to print the quad result in order, we associate each word with
+     * its original position in the list */
+    map<string,int> word_to_position;
+
+    void solve_own();
+    void solve_with_triple() const;
+    void solve_with_quad() const;
+    bool check_triple_across(int,int,const string&) const;
+    bool check_triple_down(int,int,const string&) const;
+
+    bool check_quad_across (int, int, int, int,
+                            vector<tuple<int,int,string>>&) const;
+    bool check_quad_down (int, int, int, int,
+                          vector<tuple<int,int,string>>&) const;
 };
 
 

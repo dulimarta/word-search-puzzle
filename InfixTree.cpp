@@ -29,7 +29,7 @@ bool InfixTree::insert(const string & w) {
     for (k = N - 1; k >= 0; k--) {
         sub = w.substr(k, N - k);
 //        cout << "Inserting suffix: " << sub << endl;
-        if (_insert (root, w, k, k == 0) == false) {
+        if (_insert (root, w, k, k == 0, "") == false) {
             allInserted = false;
             break;
         }
@@ -49,7 +49,7 @@ bool InfixTree::insert(const string & w) {
     return allInserted;
 }
 
-bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whole) const {
+bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whole, string word_in_tree) const {
     bool result;
     if (top == nullptr) {
         top = new InfixNode;
@@ -59,7 +59,7 @@ bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whol
             int child_idx = toupper(word[L]) - 'A';
             top->isLeaf = false;
             top->sharedCount[child_idx] = 1;
-            _insert (top->children[child_idx], word, L + 1, is_whole);
+            _insert (top->children[child_idx], word, L + 1, is_whole, word_in_tree + word[L]);
         }
         else {
             /* new leaf node */
@@ -80,16 +80,18 @@ bool InfixTree::_insert(InfixNode*& top, const string &word, int L, bool is_whol
                 top->isLeaf = false;
 //                cout << "Descend to " << word[L] << " share count is " <<
 //                        top->sharedCount[child_idx] << endl;
-                result = _insert(top->children[child_idx], word, L + 1, is_whole);
+                result = _insert(top->children[child_idx], word, L + 1, is_whole, word_in_tree + word[L]);
             }
             else {
                 /* TODO: do we need something else here? */
 //                cout << "WHAT SHOULD WE DO HERE????" << endl;
                 result = !is_whole;
+                if (!result)
+                    cerr << "FAILED: duplicate entry " << word << " vs. " << word_in_tree << endl;
             }
         }
         else {
-            cerr << "FAILED: Duplicate entry" << endl;
+            cerr << "FAILED: infix/suffix match " << word << " vs. " << word_in_tree << endl;
             result = false;
         }
     }
