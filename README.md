@@ -15,3 +15,17 @@ Then you can run the program by typing:
 ./runme    # on Linux/OSX
 runme      # on Windows
 ```
+
+To generate a puzzle of size 50x80, 30% of words, save the puzzle and key
+files in puz.txt and key.txt:
+
+```
+./runme -g -s 50 80 -p 30 -z puz.txt -k key.txt
+```
+
+To solve a puzzle:
+
+```
+./runme -s puz.txt
+./runme -s puz.txt | diff - key.out  # only on Linux/OSX
+```
